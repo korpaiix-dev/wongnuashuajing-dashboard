@@ -52,16 +52,23 @@ export async function rsvp(eventId: string, response: "yes" | "no") {
 
 export async function broadcastEvent(eventId: string) {
   const token = process.env.DISCORD_BOT_TOKEN;
-  const channel = process.env.DISCORD_ANNOUNCE_CHANNEL_ID;
-  if (!token || !channel) return;
+  if (!token) return;
   const sb = adminClient();
   const { data: ev } = await sb.from("events").select("*").eq("id", eventId).maybeSingle();
   if (!ev) return;
 
+  const channelMap: Record<string, string | undefined> = {
+    story:   process.env.DISCORD_STORY_CHANNEL_ID,
+    war:     process.env.DISCORD_STORY_CHANNEL_ID,
+    airdrop: process.env.DISCORD_AIRDROP_CHANNEL_ID,
+  };
+  const channel = channelMap[ev.type as string] ?? process.env.DISCORD_ANNOUNCE_CHANNEL_ID;
+  if (!channel) return;
+
   const when = new Date(ev.when_at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short" });
   const embed = {
     color: 0xd4af37,
-    title: `🎯 ${ev.title}`,
+    title: `\ud83c\udfaf ${ev.title}`,
     description: ev.notes || undefined,
     fields: [
       { name: "ประเภท", value: ev.type.toUpperCase(), inline: true },
@@ -76,8 +83,8 @@ export async function broadcastEvent(eventId: string) {
     {
       type: 1,
       components: [
-        { type: 2, style: 3, label: "✅ เข้าร่วม", custom_id: `rsvp:yes:${eventId}` },
-        { type: 2, style: 4, label: "❌ ไม่เข้าร่วม", custom_id: `rsvp:no:${eventId}` },
+        { type: 2, style: 3, label: "\u2705 เข้าร่วม", custom_id: `rsvp:yes:${eventId}` },
+        { type: 2, style: 4, label: "\u274C ไม่เข้าร่วม", custom_id: `rsvp:no:${eventId}` },
       ],
     },
   ];
