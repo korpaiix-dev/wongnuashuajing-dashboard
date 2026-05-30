@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { Rank } from "@/lib/types";
 
 export async function submitApplication(formData: FormData) {
   const session = await auth();
@@ -27,7 +28,6 @@ export async function submitApplication(formData: FormData) {
     { onConflict: "profile_id" }
   );
 
-  // notify admin Discord channel
   await notifyAdminChannel({
     title: "ใบสมัครใหม่",
     description: `**${display_name}** ส่งใบสมัครเข้าแก๊ง\n\n_${reason}_`,
@@ -37,51 +37,64 @@ export async function submitApplication(formData: FormData) {
   revalidatePath("/apply");
 }
 
-export async function approveApplication(applicationId: string, rank: "boss" | "admin" | "member") {
+// Single form handler — reads action + applicationId + rank from FormData
+export async function reviewApplication(formData: FormData) {
   const session = await auth();
   if (!session || (session.persona !== "admin" && session.persona !== "boss")) return;
 
+  const applicationId = String(formData.get("application_id") ?? "");
+  const verdict = String(formData.get("verdict") ?? "");
+  const rank = (String(formData.get("rank") ?? "member") as Rank);
+  if (!applicationId) return;
+
   const sb = adminClient();
-  const { data: app } = await sb
+  const { data: app, error: appErr } = await sb
     .from("applications")
     .select("id, profile_id, display_name, status")
     .eq("id", applicationId)
     .maybeSingle();
-  if (!app || app.status !== "pending") return;
+  if (appErr) { console.error("[review] fetch err", appErr); return; }
+  if (!app) { console.error("[review] app not found", applicationId); return; }
+  if (app.status !== "pending") { console.warn("[review] not pending", app.status); return; }
 
-  // create member
-  await sb.from("members").insert({
-    profile_id: app.profile_id,
-    name: app.display_name,
-    rank,
-    status: "active",
-  });
-  await sb
-    .from("applications")
-    .update({ status: "approved", reviewed_by: session.memberId ?? null, reviewed_at: new Date().toISOString() })
-    .eq("id", applicationId);
+  if (verdict === "approve") {
+    // Insert member (allow Boss to choose Member / Admin / Boss)
+    const { error: insErr } = await sb.from("members").insert({
+      profile_id: app.profile_id,
+      name: app.display_name,
+      rank,
+      status: "active",
+    });
+    if (insErr) { console.error("[review] member insert err", insErr); return; }
 
-  await sb.from("audit_logs").insert({
-    actor_id: session.memberId ?? null,
-    action: "approve_applicant",
-    target: app.display_name,
-    detail: `rank=${rank}`,
-  });
+    const { error: updErr } = await sb
+      .from("applications")
+      .update({ status: "approved", reviewed_at: new Date().toISOString() })
+      .eq("id", applicationId);
+    if (updErr) console.error("[review] app update err", updErr);
+
+    await sb.from("audit_logs").insert({
+      actor_id: session.memberId ?? null,
+      action: "approve_applicant",
+      target: app.display_name,
+      detail: `rank=${rank}`,
+    });
+  } else if (verdict === "reject") {
+    await sb
+      .from("applications")
+      .update({ status: "rejected", reviewed_at: new Date().toISOString() })
+      .eq("id", applicationId);
+    await sb.from("audit_logs").insert({
+      actor_id: session.memberId ?? null,
+      action: "reject_applicant",
+      target: app.display_name,
+    });
+  }
 
   revalidatePath("/admin/applicants");
   revalidatePath("/admin/members");
+  revalidatePath("/admin");
   revalidatePath("/roster");
-}
-
-export async function rejectApplication(applicationId: string) {
-  const session = await auth();
-  if (!session || (session.persona !== "admin" && session.persona !== "boss")) return;
-  const sb = adminClient();
-  await sb
-    .from("applications")
-    .update({ status: "rejected", reviewed_by: session.memberId ?? null, reviewed_at: new Date().toISOString() })
-    .eq("id", applicationId);
-  revalidatePath("/admin/applicants");
 }
 
 async function notifyAdminChannel(embed: {
