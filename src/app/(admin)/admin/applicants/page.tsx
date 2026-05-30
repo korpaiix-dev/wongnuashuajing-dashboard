@@ -5,7 +5,7 @@ export default async function ApplicantsAdmin() {
   const sb = adminClient();
   const { data: apps } = await sb
     .from("applications")
-    .select("id, display_name, reason, available_time, created_at, profiles(discord_username, avatar_url)")
+    .select("id, display_name, reason, available_time, created_at, profiles!applications_profile_id_fkey(discord_username, avatar_url)")
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
