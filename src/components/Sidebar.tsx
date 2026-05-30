@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { Persona, Rank } from "@/lib/types";
 import { rankLabels } from "@/lib/types";
+import { signOutAction } from "@/server-actions/auth";
 
 interface Props {
   persona: Persona;
@@ -69,7 +70,9 @@ export default function Sidebar({ persona, displayName, avatarUrl, rank }: Props
           <strong>{displayName}</strong>
           <small>{rank ? rankLabels[rank] : persona}</small>
         </div>
-        <a href="/api/auth/signout" title="Sign out" style={{ color: "var(--muted)", padding: 6 }}>↩</a>
+        <form action={signOutAction} style={{ display: "inline-flex" }}>
+          <button type="submit" title="ออกจากระบบ" aria-label="ออกจากระบบ" style={{ background: "transparent", border: 0, color: "var(--muted)", padding: 6, cursor: "pointer", fontSize: 16 }}>↩</button>
+        </form>
       </div>
     </aside>
   );

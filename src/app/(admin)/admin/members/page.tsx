@@ -52,7 +52,7 @@ export default async function MembersAdmin() {
       ) : <div className="empty" style={{ marginBottom: 24 }}>ไม่มีคำขอลาที่รอ</div>}
 
       <div className="section-h"><h2>สมาชิกทั้งหมด ({members?.length ?? 0})</h2></div>
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+      <div className="card" style={{ padding: 0, overflowX: "auto" }}>
         <table className="table">
           <thead><tr><th>สมาชิก</th><th>Discord</th><th>ยศ</th><th>สถานะ</th><th style={{ width: 280 }}>จัดการ</th></tr></thead>
           <tbody>

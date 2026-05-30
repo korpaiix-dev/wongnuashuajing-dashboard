@@ -79,7 +79,7 @@ export default async function MemberDashboard() {
         <div className="empty">ยังไม่มีกิจกรรมที่กำหนดไว้</div>
       )}
 
-      {(session?.persona === "admin" || session?.persona === "boss") && pendingApps && pendingApps > 0 && (
+      {(session?.persona === "admin" || session?.persona === "boss") && (pendingApps ?? 0) > 0 && (
         <div className="card" style={{ marginTop: 24, borderColor: "var(--warn)" }}>
           <div className="spread">
             <div>

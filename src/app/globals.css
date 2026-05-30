@@ -172,3 +172,10 @@ input:focus-visible, select:focus-visible, textarea:focus-visible {
 }
 .event-clickable { cursor: pointer; transition: background 0.15s, border-color 0.15s; }
 .event-clickable:hover { background: rgba(212, 175, 55, 0.05); border-color: var(--line-2); }
+
+/* mobile-friendly tables */
+.table { min-width: 560px; }   /* force horizontal scroll on small viewports */
+@media (max-width: 720px) {
+  .main { padding: 18px 14px; }
+  .page-head h1 { font-size: 22px; }
+}

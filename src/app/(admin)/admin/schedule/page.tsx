@@ -1,10 +1,14 @@
 import { adminClient } from "@/lib/supabase";
-import SubmitButton from "@/components/SubmitButton";
 import { createTemplate, toggleTemplate, deleteTemplate } from "@/server-actions/templates";
 import { eventLabels, type EventType } from "@/lib/types";
+import SubmitButton from "@/components/SubmitButton";
 import ConfirmSubmit from "@/components/ConfirmSubmit";
 
 const DOW_LABEL = ["อา","จ","อ","พ","พฤ","ศ","ส"];
+const DOW_FULL = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์"];
+
+// HTML pattern — uses [0-9] instead of \d to avoid escape hell
+const TIME_PATTERN = "^([01]?[0-9]|2[0-3]):[0-5][0-9]([ ]*,[ ]*([01]?[0-9]|2[0-3]):[0-5][0-9])*$";
 
 export default async function SchedulePage() {
   const sb = adminClient();
@@ -32,19 +36,25 @@ export default async function SchedulePage() {
             </div>
             <div className="form-row">
               <label>ชื่อกิจกรรม</label>
-              <input name="title" required placeholder='เช่น "Airdrop ตู้"' />
+              <input name="title" required maxLength={100} placeholder='เช่น "Airdrop ตู้"' />
             </div>
           </div>
           <div className="form-row">
-            <label>เวลาในวัน (คั่นด้วย , หรือเว้นวรรค — 24h)</label>
-            <input name="times" required pattern="^([01]?\\d|2[0-3]):[0-5]\\d(\\s*,\\s*([01]?\\d|2[0-3]):[0-5]\\d)*$" placeholder="14:00, 18:00, 22:00" title="ใส่เวลาในรูปแบบ HH:MM คั่นด้วย comma เช่น 14:00, 18:00, 22:00" />
+            <label>เวลาในวัน (รูปแบบ HH:MM คั่นด้วย comma)</label>
+            <input
+              name="times"
+              required
+              pattern={TIME_PATTERN}
+              placeholder="14:00, 18:00, 22:00"
+              title="ใส่เวลารูปแบบ HH:MM เช่น 14:00, 18:00, 22:00"
+            />
           </div>
           <div className="form-row">
             <label>วันที่ใช้</label>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 4 }}>
               {DOW_LABEL.map((d, i) => (
                 <label key={i} className="flex" style={{ fontSize: 13 }}>
-                  <input type="checkbox" name="days" value={i} defaultChecked style={{ width: 16, height: 16 }} />
+                  <input type="checkbox" name="days" value={i} defaultChecked style={{ width: 16, height: 16 }} aria-label={`วัน${DOW_FULL[i]}`} />
                   <span>{d}</span>
                 </label>
               ))}
