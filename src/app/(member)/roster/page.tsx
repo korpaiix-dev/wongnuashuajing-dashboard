@@ -2,6 +2,7 @@ import { adminClient } from "@/lib/supabase";
 import Avatar from "@/components/Avatar";
 import { rankLabels, type Rank } from "@/lib/types";
 import Link from "next/link";
+import { memberArt } from "@/lib/member-assets";
 
 const RANK_ORDER: Rank[] = ["boss", "admin", "member"];
 
@@ -36,9 +37,9 @@ export default async function Roster() {
             </div>
             <div className="grid grid-4">
               {grouped[rank].map((m) => (
-                <Link key={m.id} href={`/roster/${m.id}`} className="card" style={{ textAlign: "center" }}>
-                  <div style={{ margin: "0 auto 10px", display: "inline-block" }}>
-                    <Avatar src={m.profiles?.avatar_url} name={m.name} size="lg" />
+                <Link key={m.id} href={`/roster/${m.id}`} className="card member-card">
+                  <div className="member-card-art">
+                    <Avatar src={memberArt(m.name, m.profiles?.avatar_url)} name={m.name} size="xl" />
                   </div>
                   <strong>{m.name}</strong>
                   <div style={{ marginTop: 6 }}>

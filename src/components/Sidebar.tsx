@@ -34,7 +34,7 @@ export default function Sidebar({ persona, displayName, avatarUrl, rank }: Props
   return (
     <aside className="sidebar" style={{ display: "flex", flexDirection: "column" }}>
       <div className="brand">
-        <div className="brand-mark">W</div>
+        <div className="brand-mark brand-image"><img src="/assets/gang-emblem.png" alt="" /></div>
         <div className="brand-name">
           <strong>WONGNUA</strong>
           <small>Gang OS</small>

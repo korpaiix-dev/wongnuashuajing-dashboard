@@ -33,8 +33,11 @@ export async function POST(req: Request) {
 
   // Button click: custom_id format = "rsvp:yes:<eventId>" or "rsvp:no:<eventId>"
   if (data.type === 3) {
-    const customId = data.data?.custom_id as string;
+    const customId = data.data?.custom_id as string | undefined;
     const discordUserId = data.member?.user?.id ?? data.user?.id;
+    if (!customId || !discordUserId) {
+      return NextResponse.json({ type: 4, data: { content: "ข้อมูล Discord interaction ไม่ครบ", flags: 64 } });
+    }
     const [action, choice, eventId] = customId.split(":");
 
     if (action === "rsvp" && (choice === "yes" || choice === "no") && eventId) {

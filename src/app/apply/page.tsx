@@ -6,7 +6,7 @@ import { adminClient } from "@/lib/supabase";
 
 export default async function ApplyPage() {
   const session = await auth();
-  if (!session) redirect("/");
+  if (!session?.discordId) redirect("/");
   if (session.persona === "member" || session.persona === "admin" || session.persona === "boss") {
     redirect("/dashboard");
   }

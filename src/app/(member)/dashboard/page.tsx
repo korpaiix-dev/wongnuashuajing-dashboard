@@ -43,6 +43,15 @@ export default async function MemberDashboard() {
         <p>ภาพรวมของคุณและกิจกรรมที่กำลังจะมา</p>
       </div>
 
+      <section className="visual-hero dashboard-hero" style={{ marginBottom: 18 }}>
+        <img src="/assets/dashboard-crew.png" alt="" />
+        <div className="visual-hero-copy">
+          <p className="eyebrow">Wongnuashuajing Control</p>
+          <h2>จัดการทีมให้พร้อมก่อนลงเมือง</h2>
+          <p>เช็กอันดับ คะแนน กิจกรรม และสถานะสมาชิกได้จากหน้าเดียว โดยคุม mood ดำทองตามแก๊ง</p>
+        </div>
+      </section>
+
       <div className="grid grid-3" style={{ marginBottom: 24 }}>
         <div className="card">
           <small>คะแนนเดือนนี้</small>

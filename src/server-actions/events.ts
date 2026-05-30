@@ -17,7 +17,8 @@ export async function createEvent(formData: FormData) {
   const session = await auth();
   if (!session || (session.persona !== "admin" && session.persona !== "boss")) return;
 
-  const type = String(formData.get("type") ?? "story") as EventType;
+  const rawType = String(formData.get("type") ?? "story");
+  const type = (["airdrop", "story", "war", "meeting", "training"].includes(rawType) ? rawType : "story") as EventType;
   const title = String(formData.get("title") ?? "").trim().slice(0, 100);
   let when_at_raw = String(formData.get("when_at") ?? "");
   // BE → CE fallback (browser locale บางตัวส่งปี พ.ศ. มาในช่อง datetime-local)
@@ -30,7 +31,8 @@ export async function createEvent(formData: FormData) {
   const enemy_gang = String(formData.get("enemy_gang") ?? "").trim().slice(0, 80) || null;
   const notes = String(formData.get("notes") ?? "").trim().slice(0, 500) || null;
   const broadcast = formData.get("broadcast") === "on";
-  const points_reward = Number(formData.get("points_reward") || TYPE_DEFAULT_POINTS[type] || 10);
+  const rawPoints = Number(formData.get("points_reward") || TYPE_DEFAULT_POINTS[type] || 10);
+  const points_reward = Number.isFinite(rawPoints) ? Math.min(200, Math.max(0, Math.round(rawPoints))) : TYPE_DEFAULT_POINTS[type];
   if (!title || !when_at) return;
 
   const sb = adminClient();
@@ -112,7 +114,8 @@ export async function submitEventResult(eventId: string, formData: FormData) {
   const session = await auth();
   if (!session || (session.persona !== "admin" && session.persona !== "boss")) return;
 
-  const outcome = formData.get("outcome") as "win" | "loss" | "draw" | null;
+  const rawOutcome = String(formData.get("outcome") ?? "");
+  const outcome = (["win", "loss", "draw"].includes(rawOutcome) ? rawOutcome : null) as "win" | "loss" | "draw" | null;
   const our_score = formData.get("our_score") ? Number(formData.get("our_score")) : null;
   const their_score = formData.get("their_score") ? Number(formData.get("their_score")) : null;
   const mvp_member_id = (formData.get("mvp_member_id") as string) || null;

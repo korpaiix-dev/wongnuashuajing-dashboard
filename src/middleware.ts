@@ -4,7 +4,9 @@ import { auth } from "@/lib/auth";
 export default auth((req) => {
   const url = req.nextUrl;
   const path = url.pathname;
-  const persona = req.auth?.persona ?? "guest";
+  const authState = req.auth as { discordId?: string; persona?: string } | null;
+  const isSignedIn = Boolean(authState?.discordId);
+  const persona = authState?.persona ?? "guest";
 
   // Public paths
   if (path === "/" || path.startsWith("/api") || path.startsWith("/_next") || path.startsWith("/assets")) {
@@ -12,7 +14,7 @@ export default auth((req) => {
   }
 
   // Not signed in → bounce to "/"
-  if (!req.auth) {
+  if (!isSignedIn) {
     return NextResponse.redirect(new URL("/", url));
   }
 

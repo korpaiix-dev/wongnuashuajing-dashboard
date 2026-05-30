@@ -7,7 +7,7 @@ import type { Rank } from "@/lib/types";
 
 export async function submitApplication(formData: FormData) {
   const session = await auth();
-  if (!session) redirect("/");
+  if (!session?.discordId) redirect("/");
   if (session.persona !== "applicant" && session.persona !== "guest") return;
 
   const display_name = String(formData.get("display_name") ?? "").trim().slice(0, 40);
@@ -53,8 +53,10 @@ export async function reviewApplication(formData: FormData) {
 
   const applicationId = String(formData.get("application_id") ?? "");
   const verdict = String(formData.get("verdict") ?? "");
-  const rank = (String(formData.get("rank") ?? "member") as Rank);
+  let rank = (String(formData.get("rank") ?? "member") as Rank);
   if (!applicationId) return;
+  if (!["member", "admin", "boss"].includes(rank)) rank = "member";
+  if (session.persona !== "boss" && rank !== "member") rank = "member";
 
   const sb = adminClient();
   const { data: app, error: appErr } = await sb

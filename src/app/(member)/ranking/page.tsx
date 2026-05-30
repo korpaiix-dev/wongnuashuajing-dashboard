@@ -2,6 +2,7 @@ import { adminClient } from "@/lib/supabase";
 import Avatar from "@/components/Avatar";
 import { rankLabels, type Rank } from "@/lib/types";
 import Link from "next/link";
+import { memberArt } from "@/lib/member-assets";
 
 export default async function Ranking() {
   const sb = adminClient();
@@ -24,19 +25,25 @@ export default async function Ranking() {
       </div>
 
       {podium.length > 0 && (
-        <div className="podium">
+        <div className="ranking-stage">
+          <img className="ranking-bg" src="/assets/ranking-billboard.png" alt="" />
+          <div className="podium">
           {podium.map((m, i) => {
             const realRank = list.findIndex((r) => r.member_id === m.member_id) + 1;
             const cls = realRank === 1 ? "first" : realRank === 2 ? "second" : "third";
+            const art = memberArt(m.name, m.avatar_url);
             return (
               <div key={m.member_id} className={`podium-card ${cls}`}>
                 <div className="podium-rank">#{realRank}</div>
-                <div style={{ margin: "0 auto 10px", display: "inline-block" }}><Avatar src={m.avatar_url} name={m.name} size="lg" /></div>
-                <h3>{m.name}</h3>
-                <p className="gold" style={{ fontSize: 22, fontWeight: 700, marginTop: 6 }}>{m.points_month} pts</p>
+                {art && <img className="podium-art" src={art} alt="" />}
+                <div className="podium-info">
+                  <h3>{m.name}</h3>
+                  <p className="gold" style={{ fontSize: 22, fontWeight: 700, marginTop: 6 }}>{m.points_month} pts</p>
+                </div>
               </div>
             );
           })}
+          </div>
         </div>
       )}
 

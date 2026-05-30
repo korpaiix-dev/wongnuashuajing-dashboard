@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
-  if (!session) redirect("/");
+  if (!session?.discordId) redirect("/");
   if (session.persona !== "admin" && session.persona !== "boss") redirect("/dashboard");
 
   return (

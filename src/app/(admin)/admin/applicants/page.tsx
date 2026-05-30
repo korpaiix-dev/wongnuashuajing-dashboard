@@ -2,8 +2,11 @@ import { adminClient } from "@/lib/supabase";
 import SubmitButton from "@/components/SubmitButton";
 import Avatar from "@/components/Avatar";
 import { reviewApplication } from "@/server-actions/applications";
+import { auth } from "@/lib/auth";
+import { memberArt } from "@/lib/member-assets";
 
 export default async function ApplicantsAdmin() {
+  const session = await auth();
   const sb = adminClient();
   const { data: apps } = await sb
     .from("applications")
@@ -26,7 +29,7 @@ export default async function ApplicantsAdmin() {
             return (
               <div key={a.id} className="card" style={{ padding: 20 }}>
                 <div className="flex" style={{ marginBottom: 12 }}>
-                  <Avatar src={p?.avatar_url} name={a.display_name} size="lg" />
+                  <Avatar src={memberArt(a.display_name, p?.avatar_url)} name={a.display_name} size="lg" />
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontSize: 16 }}>{a.display_name}</strong>
                     <div><small className="muted">@{p?.discord_username ?? "—"} · เล่นได้ {a.available_time || "—"}</small></div>
@@ -38,8 +41,8 @@ export default async function ApplicantsAdmin() {
                   <input type="hidden" name="application_id" value={a.id} />
                   <select name="rank" defaultValue="member" style={{ maxWidth: 140 }}>
                     <option value="member">Member</option>
-                    <option value="admin">Admin</option>
-                    <option value="boss">Boss</option>
+                    {session?.persona === "boss" && <option value="admin">เลขา</option>}
+                    {session?.persona === "boss" && <option value="boss">Boss</option>}
                   </select>
                   <SubmitButton type="submit" name="verdict" value="approve" className="btn btn-primary" pendingText="กำลังรับ…">รับเข้าแก๊ง</SubmitButton>
                   <button type="submit" name="verdict" value="reject" className="btn btn-danger">ปฏิเสธ</button>

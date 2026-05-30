@@ -5,6 +5,7 @@ import { reviewLeaveForm } from "@/server-actions/leaves";
 import { kickMemberForm, updateMemberRankForm } from "@/server-actions/members";
 import { rankLabels, type Rank } from "@/lib/types";
 import ConfirmSubmit from "@/components/ConfirmSubmit";
+import { memberArt } from "@/lib/member-assets";
 
 export default async function MembersAdmin() {
   const session = await auth();
@@ -62,7 +63,7 @@ export default async function MembersAdmin() {
                 <tr key={m.id}>
                   <td>
                     <span className="name-cell">
-                      <Avatar src={p?.avatar_url} name={m.name} size="sm" />
+                      <Avatar src={memberArt(m.name, p?.avatar_url)} name={m.name} size="sm" />
                       <span>{m.name}</span>
                     </span>
                   </td>
@@ -70,7 +71,7 @@ export default async function MembersAdmin() {
                   <td><span className={`pill pill-${m.rank === "boss" ? "gold" : m.rank === "admin" ? "warn" : ""}`}>{rankLabels[m.rank as Rank]}</span></td>
                   <td><span className={`pill pill-${m.status === "active" ? "success" : m.status === "loa" ? "warn" : "danger"}`}>{m.status}</span></td>
                   <td>
-                    {canChangeRank && m.status === "active" && (
+                    {canChangeRank && m.status === "active" && m.id !== session?.memberId && (
                       <form action={updateMemberRankForm} style={{ display: "inline-flex", gap: 6, marginRight: 6 }}>
                         <input type="hidden" name="member_id" value={m.id} />
                         <select name="rank" defaultValue={m.rank} style={{ width: 100 }}>
@@ -81,7 +82,7 @@ export default async function MembersAdmin() {
                         <button type="submit" className="btn btn-sm">บันทึก</button>
                       </form>
                     )}
-                    {canChangeRank && m.status !== "kicked" && (
+                    {canChangeRank && m.status !== "kicked" && m.id !== session?.memberId && (
                       <form action={kickMemberForm} style={{ display: "inline-block" }}>
                         <input type="hidden" name="member_id" value={m.id} />
                         <ConfirmSubmit message="ปลดสมาชิกคนนี้ออกจากแก๊ง?" className="btn btn-sm btn-danger">ปลด</ConfirmSubmit>

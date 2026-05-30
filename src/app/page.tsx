@@ -3,22 +3,35 @@ import { redirect } from "next/navigation";
 
 export default async function Landing() {
   const session = await auth();
-  if (session) {
+  if (session?.discordId) {
     if (session.persona === "applicant") redirect("/apply");
     if (session.persona === "member" || session.persona === "admin" || session.persona === "boss") {
       redirect("/dashboard");
     }
   }
   return (
-    <div className="landing">
-      <div className="landing-card">
-        <div style={{ width: 64, height: 64, borderRadius: 14, background: "var(--gold)", color: "#050505", display: "grid", placeItems: "center", fontFamily: "Playfair Display, serif", fontSize: 32, fontWeight: 700, margin: "0 auto 18px" }}>
-          W
+    <div className="landing landing-visual">
+      <div className="landing-bg" aria-hidden="true" />
+      <div className="landing-content">
+        <div className="landing-mark">
+          <img src="/assets/gang-emblem.png" alt="" />
         </div>
         <h1>WONGNUASHUAJING</h1>
-        <p className="landing-sub">— Women Gang Operating System —</p>
-        <p style={{ color: "#aaa", marginBottom: 28, fontSize: 13.5, lineHeight: 1.7 }}>
-          เข้าระบบด้วย Discord เพื่อสมัครเข้าแก๊ง ดูสมาชิก กิจกรรม และอันดับคะแนนประจำเดือน
+        <p className="landing-sub">Women Gang Operating System</p>
+        <p className="landing-copy">
+          ระบบจัดการสมาชิก ยศ ใบสมัคร กิจกรรม ขาด/ลา และอันดับประจำเดือนของแก๊งผู้หญิงล้วนใน FiveM
+        </p>
+        <div className="landing-stats" aria-label="Dashboard preview stats">
+          <span><b>Roster</b><small>Role Based</small></span>
+          <span><b>Ranking</b><small>Monthly Board</small></span>
+          <span><b>Discord</b><small>OAuth Ready</small></span>
+        </div>
+      </div>
+      <div className="landing-card auth-card">
+        <p className="eyebrow">Official Login</p>
+        <h2>เข้าสู่ระบบแก๊ง</h2>
+        <p style={{ color: "#aaa", marginBottom: 22, fontSize: 13.5, lineHeight: 1.7 }}>
+          ใช้ Discord เพื่อตรวจ role และเปิด dashboard ตามสิทธิ์ของสมาชิก
         </p>
         <form
           action={async () => {

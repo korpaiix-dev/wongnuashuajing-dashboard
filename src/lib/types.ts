@@ -3,7 +3,7 @@ export type Rank = "boss" | "admin" | "member";
 
 export const rankLabels: Record<Rank, string> = {
   boss: "Boss",
-  admin: "Admin",
+  admin: "เลขา",
   member: "Member",
 };
 

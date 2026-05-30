@@ -2,6 +2,7 @@ import { adminClient } from "@/lib/supabase";
 import Avatar from "@/components/Avatar";
 import { rankLabels, type Rank } from "@/lib/types";
 import { notFound } from "next/navigation";
+import { memberArt } from "@/lib/member-assets";
 
 export default async function MemberProfile({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,8 +28,9 @@ export default async function MemberProfile({ params }: { params: Promise<{ id: 
   return (
     <div>
       <div style={{ marginBottom: 24 }}><a href="/roster" className="muted" style={{ fontSize: 12 }}>← กลับไป Roster</a></div>
-      <div className="card" style={{ display: "flex", gap: 20, alignItems: "center", padding: 24 }}>
-        <Avatar src={profile?.avatar_url} name={m.name} size="xl" />
+      <div className="profile-hero card">
+        <div className="profile-hero-bg" aria-hidden="true" />
+        <Avatar src={memberArt(m.name, profile?.avatar_url)} name={m.name} size="xl" />
         <div style={{ flex: 1 }}>
           <span className={`pill pill-${rank === "boss" ? "gold" : rank === "admin" ? "warn" : ""}`}>{rankLabels[rank]}</span>
           <h1 style={{ marginTop: 8 }}>{m.name}</h1>

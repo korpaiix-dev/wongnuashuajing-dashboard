@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
 import { rsvpForm } from "@/server-actions/events";
+import Avatar from "@/components/Avatar";
+import { memberArt } from "@/lib/member-assets";
 
 export default async function EventDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -59,7 +61,7 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
             {yesList.length === 0 && <small className="muted">ยังไม่มีใครตอบรับ</small>}
             {yesList.map((r, i) => r.members && (
               <div key={i} className="flex">
-                {r.members.profiles?.avatar_url ? <img src={r.members.profiles.avatar_url} alt="" className="avatar avatar-sm" /> : <div className="avatar avatar-sm">{r.members.name.charAt(0)}</div>}
+                <Avatar src={memberArt(r.members.name, r.members.profiles?.avatar_url)} name={r.members.name} size="sm" />
                 <span>{r.members.name}</span>
               </div>
             ))}
@@ -71,7 +73,7 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
             {noList.length === 0 && <small className="muted">—</small>}
             {noList.map((r, i) => r.members && (
               <div key={i} className="flex">
-                {r.members.profiles?.avatar_url ? <img src={r.members.profiles.avatar_url} alt="" className="avatar avatar-sm" /> : <div className="avatar avatar-sm">{r.members.name.charAt(0)}</div>}
+                <Avatar src={memberArt(r.members.name, r.members.profiles?.avatar_url)} name={r.members.name} size="sm" />
                 <span>{r.members.name}</span>
               </div>
             ))}
