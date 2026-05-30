@@ -1,0 +1,7 @@
+{
+  "regions": ["sin1"],
+  "functions": {
+    "src/app/**/*.tsx": { "maxDuration": 10 },
+    "src/app/api/**/*.ts": { "maxDuration": 15 }
+  }
+}

@@ -23,6 +23,15 @@ export async function submitApplication(formData: FormData) {
     .maybeSingle();
   if (!profile) return;
 
+  // Block re-submit if previously rejected or already approved (B2)
+  const { data: existing } = await sb
+    .from("applications")
+    .select("status")
+    .eq("profile_id", profile.id)
+    .maybeSingle();
+  if (existing?.status === "rejected") return;
+  if (existing?.status === "approved") return;
+
   await sb.from("applications").upsert(
     { profile_id: profile.id, display_name, available_time, reason, status: "pending" },
     { onConflict: "profile_id" }

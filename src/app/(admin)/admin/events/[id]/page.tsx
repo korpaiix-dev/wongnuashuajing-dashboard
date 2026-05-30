@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import SubmitButton from "@/components/SubmitButton";
 import { submitEventResultForm } from "@/server-actions/events";
 import { notFound } from "next/navigation";
 
@@ -70,7 +71,7 @@ export default async function AdminEventResult({ params }: { params: Promise<{ i
           <label>หมายเหตุ</label>
           <textarea name="notes" rows={2} defaultValue={result?.notes ?? ""} />
         </div>
-        <button type="submit" className="btn btn-primary btn-block">บันทึกผล + ให้คะแนน</button>
+        <SubmitButton className="btn btn-primary btn-block" pendingText="กำลังบันทึก…">บันทึกผล + ให้คะแนน</SubmitButton>
       </form>
     </div>
   );

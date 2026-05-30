@@ -1,4 +1,5 @@
 import { createEvent } from "@/server-actions/events";
+import SubmitButton from "@/components/SubmitButton";
 
 export default function CreateEvent() {
   return (
@@ -50,7 +51,7 @@ export default function CreateEvent() {
           <input type="checkbox" name="broadcast" defaultChecked style={{ width: 16, height: 16 }} />
           <span>📢 Broadcast ไป Discord ทันที (ปุ่ม RSVP)</span>
         </label>
-        <button className="btn btn-primary btn-block">สร้างกิจกรรม</button>
+        <SubmitButton className="btn btn-primary btn-block" pendingText="กำลังสร้าง…">สร้างกิจกรรม</SubmitButton>
       </form>
     </div>
   );

@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import SubmitButton from "@/components/SubmitButton";
 import Avatar from "@/components/Avatar";
 import { reviewApplication } from "@/server-actions/applications";
 
@@ -40,7 +41,7 @@ export default async function ApplicantsAdmin() {
                     <option value="admin">Admin</option>
                     <option value="boss">Boss</option>
                   </select>
-                  <button type="submit" name="verdict" value="approve" className="btn btn-primary">รับเข้าแก๊ง</button>
+                  <SubmitButton type="submit" name="verdict" value="approve" className="btn btn-primary" pendingText="กำลังรับ…">รับเข้าแก๊ง</SubmitButton>
                   <button type="submit" name="verdict" value="reject" className="btn btn-danger">ปฏิเสธ</button>
                 </form>
               </div>

@@ -120,31 +120,49 @@ export async function submitEventResult(eventId: string, formData: FormData) {
   const attended = formData.getAll("attended").map(String); // member ids
 
   const sb = adminClient();
+  const { data: ev } = await sb.from("events").select("type, points_reward, title").eq("id", eventId).maybeSingle();
+  if (!ev) return;
+
+  // Save result + mark done
   await sb.from("event_results").upsert({
     event_id: eventId, outcome, our_score, their_score, mvp_member_id, notes,
     scored_at: new Date().toISOString(),
   });
   await sb.from("events").update({ status: "done" }).eq("id", eventId);
 
-  const { data: ev } = await sb.from("events").select("type, points_reward, title").eq("id", eventId).maybeSingle();
-  if (!ev) return;
+  // Filter attended to active members only (B1)
+  let validAttended: string[] = [];
+  if (attended.length > 0) {
+    const { data: active } = await sb
+      .from("members")
+      .select("id")
+      .in("id", attended)
+      .eq("status", "active");
+    validAttended = (active ?? []).map((m) => m.id as string);
+  }
 
-  // คะแนนเข้าร่วม
-  for (const mid of attended) {
+  // IDEMPOTENT: wipe existing score_logs for this event then rebuild
+  await sb.from("score_logs").delete().eq("event_id", eventId);
+
+  const logs: { member_id: string; event_id: string; delta: number; reason: string }[] = [];
+  for (const mid of validAttended) {
     let delta = ev.points_reward;
     if ((ev.type === "story" || ev.type === "war") && outcome === "win") delta += SCORE_RULES.story_win_bonus;
-    await sb.from("score_logs").insert({
-      member_id: mid, event_id: eventId, delta,
-      reason: `เข้าร่วม ${ev.title}${outcome === "win" ? " (ชนะ)" : ""}`,
-    });
+    logs.push({ member_id: mid, event_id: eventId, delta, reason: `เข้าร่วม ${ev.title}${outcome === "win" ? " (ชนะ)" : ""}` });
   }
-  // MVP bonus
-  if (mvp_member_id) {
-    await sb.from("score_logs").insert({
-      member_id: mvp_member_id, event_id: eventId, delta: SCORE_RULES.mvp_bonus,
-      reason: `MVP: ${ev.title}`,
-    });
+  if (mvp_member_id && validAttended.includes(mvp_member_id)) {
+    logs.push({ member_id: mvp_member_id, event_id: eventId, delta: SCORE_RULES.mvp_bonus, reason: `MVP: ${ev.title}` });
   }
+  if (logs.length > 0) await sb.from("score_logs").insert(logs);  // batch — 1 query
+
+  // Audit (BP6)
+  await sb.from("audit_logs").insert({
+    actor_id: session.memberId ?? null,
+    action: "submit_event_result",
+    target: ev.title,
+    detail: `outcome=${outcome ?? "—"}, score=${our_score ?? "?"}-${their_score ?? "?"}, attended=${validAttended.length}`,
+  });
+
   revalidatePath("/ranking");
   revalidatePath(`/events/${eventId}`);
   revalidatePath("/admin");

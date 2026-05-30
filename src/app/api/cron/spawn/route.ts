@@ -15,12 +15,22 @@ function thaiNow() {
   return { hhmm: `${hh}:${mm}`, dow: wdMap[wdShort] ?? new Date().getDay() };
 }
 
-async function discordBroadcast(eventId: string) {
+type EventRow = {
+  id: string;
+  type: string;
+  title: string;
+  when_at: string;
+  location: string | null;
+  enemy_gang: string | null;
+  notes: string | null;
+  points_reward: number;
+};
+
+async function discordBroadcast(ev: EventRow) {
   const token = process.env.DISCORD_BOT_TOKEN;
   if (!token) return;
   const sb = adminClient();
-  const { data: ev } = await sb.from("events").select("*").eq("id", eventId).maybeSingle();
-  if (!ev) return;
+  const eventId = ev.id;
 
   const channelMap: Record<string, string | undefined> = {
     story:   process.env.DISCORD_STORY_CHANNEL_ID,
@@ -106,20 +116,29 @@ export async function POST(req: Request) {
       points_reward: t.points_reward,
       status: "open",
       created_by: t.created_by ?? null,
-    }).select("id, title").single();
+    }).select("id").single();
     if (!ev) continue;
 
     await sb.from("event_templates").update({ last_spawned_at: whenIso }).eq("id", t.id);
-    await discordBroadcast(ev.id);
-    spawned.push({ id: ev.id, title: ev.title, time: hhmm });
+    await discordBroadcast({
+      id: ev.id,
+      type: t.type,
+      title: t.title,
+      when_at: whenIso,
+      location: t.location,
+      enemy_gang: t.enemy_gang,
+      notes: t.notes,
+      points_reward: t.points_reward,
+    });
+    spawned.push({ id: ev.id, title: t.title, time: hhmm });
   }
 
   return NextResponse.json({ ok: true, hhmm, dow, checked: (templates ?? []).length, spawned });
 }
 
-// Also allow GET for quick manual test (admin in browser)
-export async function GET(req: Request) {
-  return POST(req);
+// Health check only — does NOT trigger spawn
+export async function GET() {
+  return NextResponse.json({ ok: true, message: "cron endpoint healthy" });
 }
 
 export const runtime = "nodejs";

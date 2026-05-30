@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import SubmitButton from "@/components/SubmitButton";
 import { createTemplate, toggleTemplate, deleteTemplate } from "@/server-actions/templates";
 import { eventLabels, type EventType } from "@/lib/types";
 import ConfirmSubmit from "@/components/ConfirmSubmit";
@@ -63,7 +64,7 @@ export default async function SchedulePage() {
             <label>หมายเหตุ (ไม่บังคับ)</label>
             <textarea name="notes" rows={2} placeholder="เช่น 'รวมก่อน 5 นาที'" />
           </div>
-          <button type="submit" className="btn btn-primary btn-block">เพิ่มเทมเพลต</button>
+          <SubmitButton className="btn btn-primary btn-block" pendingText="กำลังเพิ่ม…">เพิ่มเทมเพลต</SubmitButton>
         </form>
       </div>
 

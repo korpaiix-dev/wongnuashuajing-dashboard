@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import SubmitButton from "@/components/SubmitButton";
 import { adminClient } from "@/lib/supabase";
 import { submitLeave } from "@/server-actions/leaves";
 
@@ -46,7 +47,7 @@ export default async function LeavePage() {
               <label>เหตุผล</label>
               <textarea name="reason" rows={3} required minLength={5} placeholder="เหตุผลสั้นๆ (อย่างน้อย 5 ตัวอักษร)" />
             </div>
-            <button className="btn btn-primary btn-block">ส่งคำขอ</button>
+            <SubmitButton className="btn btn-primary btn-block" pendingText="กำลังส่ง…">ส่งคำขอ</SubmitButton>
           </form>
         </div>
 

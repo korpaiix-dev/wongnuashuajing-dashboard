@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import SubmitButton from "@/components/SubmitButton";
 import { redirect } from "next/navigation";
 import { submitApplication } from "@/server-actions/applications";
 import { adminClient } from "@/lib/supabase";
@@ -67,7 +68,7 @@ export default async function ApplyPage() {
               <label>เหตุผลที่อยากเข้าแก๊ง</label>
               <textarea name="reason" rows={4} required maxLength={500} placeholder="ทำไมอยากเข้าแก๊งนี้?" />
             </div>
-            <button type="submit" className="btn btn-primary btn-block">ส่งใบสมัคร</button>
+            <SubmitButton className="btn btn-primary btn-block" pendingText="กำลังส่ง…">ส่งใบสมัคร</SubmitButton>
           </form>
         )}
       </div>
