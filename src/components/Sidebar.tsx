@@ -26,6 +26,7 @@ const ADMIN_NAV = [
   { href: "/admin/members", label: "จัดการสมาชิก", icon: "⚒" },
   { href: "/admin/events/new", label: "สร้างกิจกรรม", icon: "✦" },
   { href: "/admin/schedule", label: "ตั้งแจ้งเตือนรายวัน", icon: "◷" },
+  { href: "/admin/settings",  label: "ตั้งค่าคะแนน", icon: "⚙" },
 ];
 
 export default function Sidebar({ persona, displayName, avatarUrl, rank }: Props) {

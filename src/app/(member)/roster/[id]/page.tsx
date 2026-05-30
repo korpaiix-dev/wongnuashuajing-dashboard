@@ -22,6 +22,14 @@ export default async function MemberProfile({ params }: { params: Promise<{ id: 
     .order("responded_at", { ascending: false })
     .limit(10);
 
+  const { data: scoreLogs } = await sb
+    .from("score_logs")
+    .select("id, delta, reason, created_at, event_id")
+    .eq("member_id", id)
+    .gte("created_at", new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString())
+    .order("created_at", { ascending: false })
+    .limit(50);
+
   const profile = (m as unknown as { profiles?: { avatar_url?: string | null; bio?: string | null; discord_username?: string | null } | null }).profiles;
   const rank = m.rank as Rank;
 
@@ -66,6 +74,32 @@ export default async function MemberProfile({ params }: { params: Promise<{ id: 
         </div>
       ) : (
         <div className="empty">ยังไม่มีกิจกรรมล่าสุด</div>
+      )}
+
+      <div className="section-h" style={{ marginTop: 28 }}><h2>คะแนนเดือนนี้ (รายการ)</h2></div>
+      {scoreLogs && scoreLogs.length > 0 ? (
+        <div className="card" style={{ padding: 0, overflowX: "auto" }}>
+          <table className="table">
+            <thead>
+              <tr><th style={{ width: 70 }}>คะแนน</th><th>เหตุผล</th><th style={{ width: 110 }}>วันที่</th></tr>
+            </thead>
+            <tbody>
+              {scoreLogs.map((s) => (
+                <tr key={s.id}>
+                  <td>
+                    <strong className={s.delta > 0 ? "success" : "danger"}>
+                      {s.delta > 0 ? `+${s.delta}` : s.delta}
+                    </strong>
+                  </td>
+                  <td>{s.reason}</td>
+                  <td className="muted" style={{ fontSize: 12 }}>{new Date(s.created_at).toLocaleDateString("th-TH", { day: "2-digit", month: "short" })}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="empty">ยังไม่มีคะแนนในเดือนนี้</div>
       )}
     </div>
   );

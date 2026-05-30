@@ -2,7 +2,7 @@
 import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
-import { SCORE_RULES } from "@/lib/types";
+import { getScoreRules } from "@/lib/score-rules";
 
 export async function submitLeave(formData: FormData) {
   const session = await auth();
@@ -25,7 +25,7 @@ export async function submitLeave(formData: FormData) {
   if (type === "absent") {
     await sb.from("score_logs").insert({
       member_id: session.memberId,
-      delta: SCORE_RULES.absent_no_notice,
+      delta: (await getScoreRules()).absent_no_notice,
       reason: `แจ้งขาด: ${reason || "ไม่ระบุ"}`,
     });
   }
@@ -48,7 +48,7 @@ export async function reviewLeave(leaveId: string, approve: boolean) {
   if (approve && lv.type === "loa") {
     await sb.from("score_logs").insert({
       member_id: lv.member_id,
-      delta: SCORE_RULES.loa_taken,
+      delta: (await getScoreRules()).loa_taken,
       reason: `ลาตามแจ้ง (${lv.start_date} → ${lv.end_date})`,
     });
   }

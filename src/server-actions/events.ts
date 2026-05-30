@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { SCORE_RULES, type EventType } from "@/lib/types";
+import { type EventType, SCORE_RULES } from "@/lib/types";
+import { getScoreRules } from "@/lib/score-rules";
 
 const TYPE_DEFAULT_POINTS: Record<EventType, number> = {
   airdrop: SCORE_RULES.airdrop_join,
@@ -147,14 +148,15 @@ export async function submitEventResult(eventId: string, formData: FormData) {
   // IDEMPOTENT: wipe existing score_logs for this event then rebuild
   await sb.from("score_logs").delete().eq("event_id", eventId);
 
+  const rules = await getScoreRules();
   const logs: { member_id: string; event_id: string; delta: number; reason: string }[] = [];
   for (const mid of validAttended) {
     let delta = ev.points_reward;
-    if ((ev.type === "story" || ev.type === "war") && outcome === "win") delta += SCORE_RULES.story_win_bonus;
+    if ((ev.type === "story" || ev.type === "war") && outcome === "win") delta += rules.story_win_bonus;
     logs.push({ member_id: mid, event_id: eventId, delta, reason: `เข้าร่วม ${ev.title}${outcome === "win" ? " (ชนะ)" : ""}` });
   }
   if (mvp_member_id && validAttended.includes(mvp_member_id)) {
-    logs.push({ member_id: mvp_member_id, event_id: eventId, delta: SCORE_RULES.mvp_bonus, reason: `MVP: ${ev.title}` });
+    logs.push({ member_id: mvp_member_id, event_id: eventId, delta: rules.mvp_bonus, reason: `MVP: ${ev.title}` });
   }
   if (logs.length > 0) await sb.from("score_logs").insert(logs);  // batch — 1 query
 
