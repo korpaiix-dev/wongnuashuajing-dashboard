@@ -11,10 +11,11 @@ let activeFilter = "all";
 let activeRole = localStorage.getItem("wng-role") || "boss";
 
 const roleLevels = {
-  recruit: 0,
-  member: 1,
-  admin: 2,
-  boss: 3,
+  register: 0,
+  testmember: 1,
+  member: 2,
+  secretary: 3,
+  boss: 4,
 };
 
 const roleProfiles = {
@@ -22,13 +23,13 @@ const roleProfiles = {
     name: "Just",
     label: "Boss",
     note: "คุณอยู่ในโหมด Boss: เห็นข้อมูลครบ จัดการสมาชิก กิจกรรม คำขอ และ audit ได้ทั้งหมด",
-    access: ["จัดการสมาชิกทั้งหมด", "เปลี่ยนยศและสถานะ", "อนุมัติ LOA / Recruit", "ดู Audit & Strike"],
+    access: ["จัดการสมาชิกทั้งหมด", "เปลี่ยนยศและสถานะ", "อนุมัติ LOA / Register", "ดู Audit & Strike"],
   },
-  admin: {
-    name: "Melfury",
-    label: "Admin",
-    note: "คุณอยู่ในโหมด Admin: ช่วยดูแลกิจกรรม สมาชิก และคำขอ แต่ไม่ควรเปลี่ยนยศสูงสุด",
-    access: ["สร้างกิจกรรม", "เช็กชื่อและให้แต้ม", "อนุมัติ LOA", "แก้ข้อมูลสมาชิกทั่วไป"],
+  secretary: {
+    name: "Sixseven",
+    label: "เลขา",
+    note: "คุณอยู่ในโหมดเลขา: ดูแลใบสมัคร สมาชิก กิจกรรม และระบบขาด/ลาแทน Boss ได้",
+    access: ["Review Register", "จัดการสมาชิก", "อนุมัติ LOA", "เช็กชื่อและให้แต้ม"],
   },
   member: {
     name: "Aheye",
@@ -36,11 +37,17 @@ const roleProfiles = {
     note: "คุณอยู่ในโหมด Member: เห็นข้อมูลทีมแบบจำกัด ลงชื่อกิจกรรม ส่ง LOA และแก้โปรไฟล์ตัวเอง",
     access: ["ดูโปรไฟล์ตัวเอง", "ลงชื่อกิจกรรม", "ส่งคำขอ LOA", "ดูแต้มและประกาศ"],
   },
-  recruit: {
-    name: "Guest Recruit",
-    label: "Recruit",
-    note: "คุณอยู่ในโหมด Recruit: ยังไม่เป็นสมาชิกเต็มตัว จึงเห็นเฉพาะพื้นที่สมัครและสถานะรออนุมัติ",
-    access: ["กรอกใบสมัคร", "ดูสถานะสัมภาษณ์", "อ่านประกาศรับสมัคร", "รอ Admin อนุมัติ"],
+  testmember: {
+    name: "Shion",
+    label: "Test Member",
+    note: "คุณอยู่ในโหมด Test Member: ใช้งานส่วนสมาชิกพื้นฐานได้ แต่ยังถูกจำกัดบางฟีเจอร์",
+    access: ["ลงชื่อกิจกรรม", "ส่ง LOA", "ดูประกาศ", "รอประเมินเลื่อนขั้น"],
+  },
+  register: {
+    name: "Guest Register",
+    label: "Register",
+    note: "คุณอยู่ในโหมด Register: ส่งโปรไฟล์สมัครเข้าแก๊งและรอเลขา/Boss อนุมัติ",
+    access: ["ส่งโปรไฟล์สมัคร", "ดูสถานะใบสมัคร", "อ่านประกาศรับสมัคร", "รออนุมัติเป็น Test Member"],
   },
 };
 
@@ -68,6 +75,10 @@ function isVisibleForRole(element, role) {
 }
 
 function applyRole(role) {
+  if (!roleProfiles[role]) {
+    role = "boss";
+  }
+
   activeRole = role;
   localStorage.setItem("wng-role", role);
 

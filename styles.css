@@ -314,7 +314,7 @@ h3 {
 
 .role-switcher {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 10px;
 }
 
@@ -351,7 +351,7 @@ h3 {
 
 .permission-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 14px;
   margin-top: 16px;
 }
@@ -707,13 +707,20 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
   width: 100%;
   min-height: 42px;
   border: 1px solid #242424;
   background: #070707;
   color: var(--text);
   padding: 0 12px;
+}
+
+textarea {
+  min-height: 96px;
+  padding: 12px;
+  resize: vertical;
 }
 
 .form-btn {
@@ -766,6 +773,24 @@ tbody tr:hover {
   background: linear-gradient(90deg, rgba(212, 175, 55, 0.12), rgba(212, 175, 55, 0.02));
 }
 
+.drive-roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.drive-roster span {
+  min-height: 28px;
+  padding: 4px 9px;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  background: rgba(5, 5, 5, 0.76);
+  color: #d8d8d8;
+  font-size: 12px;
+}
+
 .avatar {
   display: inline-grid;
   width: 32px;
@@ -790,6 +815,214 @@ tbody tr:hover {
 
 .avatar.silver {
   color: var(--silver);
+}
+
+.member-name {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 10px;
+}
+
+.member-name img {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  object-fit: cover;
+  object-position: center 18%;
+  border: 1px solid rgba(212, 175, 55, 0.34);
+  background: #080808;
+}
+
+.register-section,
+.ranking-section {
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(12, 10, 6, 0.94)),
+    radial-gradient(circle at 72% 18%, rgba(212, 175, 55, 0.1), transparent 32%);
+}
+
+.register-grid,
+.leave-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.85fr) minmax(0, 1.15fr);
+  gap: 16px;
+  align-items: stretch;
+}
+
+.register-form {
+  display: grid;
+  gap: 13px;
+}
+
+.register-visual {
+  position: relative;
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 8px;
+  background: #050505;
+}
+
+.register-visual img {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  object-fit: cover;
+  object-position: center 64%;
+  filter: saturate(0.78) contrast(1.08) brightness(0.72);
+}
+
+.register-visual div {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  padding: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  background: rgba(5, 5, 5, 0.78);
+  backdrop-filter: blur(14px);
+}
+
+.register-visual p:last-child {
+  margin-bottom: 0;
+  color: #c8c8c8;
+  line-height: 1.7;
+}
+
+.applications {
+  background: #050505;
+}
+
+.application-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.application-card {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 16px;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  border-radius: 8px;
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.07), rgba(8, 8, 8, 0.96));
+}
+
+.application-card p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.leave-section {
+  background:
+    linear-gradient(rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.03) 1px, transparent 1px),
+    #050505;
+  background-size: 34px 34px;
+}
+
+.absence-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.absence-list span {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid #171717;
+  background: rgba(7, 7, 7, 0.92);
+}
+
+.absence-list em {
+  color: var(--gold);
+  font-style: normal;
+}
+
+.podium {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 1fr;
+  gap: 16px;
+  align-items: end;
+  min-height: 620px;
+  padding: 20px;
+  border: 1px solid rgba(212, 175, 55, 0.14);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(5, 5, 5, 0.16), #050505),
+    url("assets/ranking-billboard.png") center 58% / cover;
+}
+
+.podium-card {
+  position: relative;
+  display: grid;
+  min-height: 430px;
+  align-content: end;
+  overflow: hidden;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 8px;
+  background: #080808;
+}
+
+.podium-card.first {
+  min-height: 540px;
+  border-color: rgba(212, 175, 55, 0.62);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.18);
+}
+
+.podium-card.second {
+  min-height: 470px;
+}
+
+.podium-card.third {
+  min-height: 430px;
+}
+
+.podium-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 14%;
+  filter: saturate(0.9) contrast(1.04) brightness(0.82);
+}
+
+.podium-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.06), rgba(0, 0, 0, 0.84));
+}
+
+.podium-card span,
+.podium-card h3,
+.podium-card p {
+  position: relative;
+  z-index: 1;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+
+.podium-card span {
+  width: fit-content;
+  margin-bottom: 8px;
+  padding: 5px 10px;
+  border: 1px solid rgba(212, 175, 55, 0.42);
+  color: var(--gold);
+  font-weight: 800;
+}
+
+.podium-card h3 {
+  font-size: 28px;
+}
+
+.podium-card p {
+  margin-bottom: 18px;
+  color: #d5d5d5;
 }
 
 .event-card {
@@ -879,11 +1112,14 @@ tbody tr:hover {
   .metrics,
   .login-panel,
   .permission-grid,
+  .register-grid,
+  .leave-grid,
   .management-grid,
   .visual-command,
   .member-layout,
   .event-grid,
-  .profile {
+  .profile,
+  .podium {
     grid-template-columns: 1fr;
   }
 
@@ -893,6 +1129,13 @@ tbody tr:hover {
 
   .role-switcher {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .podium-card,
+  .podium-card.first,
+  .podium-card.second,
+  .podium-card.third {
+    min-height: 420px;
   }
 
   .search {
@@ -926,7 +1169,8 @@ tbody tr:hover {
   .role-switcher,
   .section-heading.row,
   .panel-head,
-  .timeline article {
+  .timeline article,
+  .application-card {
     grid-template-columns: 1fr;
   }
 

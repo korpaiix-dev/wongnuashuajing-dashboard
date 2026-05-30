@@ -24,13 +24,15 @@
       <nav class="nav-links" aria-label="Primary navigation">
         <a href="#dashboard">แดชบอร์ด</a>
         <a href="#members">สมาชิก</a>
+        <a href="#register">สมัคร</a>
+        <a href="#leave">ขาด/ลา</a>
+        <a href="#ranking">Ranking</a>
         <a href="#events">กิจกรรม</a>
-        <a href="#profile">โปรไฟล์</a>
       </nav>
       <div class="session-chip" aria-live="polite">
         <span class="session-dot"></span>
         <span data-current-user>Guest</span>
-        <strong data-current-role>Recruit</strong>
+        <strong data-current-role>Register</strong>
       </div>
       <button class="icon-btn" type="button" aria-label="เปิดเมนู">☰</button>
     </header>
@@ -75,16 +77,20 @@
               <span>Boss</span>
               <small>คุมทุกระบบ</small>
             </button>
-            <button type="button" data-login-role="admin">
-              <span>Admin</span>
-              <small>จัดการงานแก๊ง</small>
+            <button type="button" data-login-role="secretary">
+              <span>เลขา</span>
+              <small>ช่วยจัดการระบบ</small>
             </button>
             <button type="button" data-login-role="member">
               <span>Member</span>
               <small>ใช้งานส่วนตัว</small>
             </button>
-            <button type="button" data-login-role="recruit">
-              <span>Recruit</span>
+            <button type="button" data-login-role="testmember">
+              <span>Test Member</span>
+              <small>ช่วงทดลองงาน</small>
+            </button>
+            <button type="button" data-login-role="register">
+              <span>Register</span>
               <small>รออนุมัติ</small>
             </button>
           </div>
@@ -98,7 +104,7 @@
           </article>
           <article class="permission-card">
             <span class="metric-icon">◇</span>
-            <h3>Admin</h3>
+            <h3>เลขา</h3>
             <p>สร้างกิจกรรม เช็กชื่อ อนุมัติ LOA และช่วยอัปเดตข้อมูลสมาชิก</p>
           </article>
           <article class="permission-card">
@@ -107,8 +113,13 @@
             <p>ดูโปรไฟล์ตัวเอง ลงชื่อกิจกรรม ส่ง LOA และติดตามแต้มของตัวเอง</p>
           </article>
           <article class="permission-card">
+            <span class="metric-icon">T</span>
+            <h3>Test Member</h3>
+            <p>ลงชื่อกิจกรรมและส่งโปรไฟล์ได้ แต่ยังถูกจำกัดการเข้าถึงบางส่วน</p>
+          </article>
+          <article class="permission-card">
             <span class="metric-icon">+</span>
-            <h3>Recruit</h3>
+            <h3>Register</h3>
             <p>กรอกใบสมัคร ดูสถานะสัมภาษณ์ และรอแอดมินอนุมัติเข้าสู่แก๊ง</p>
           </article>
         </div>
@@ -139,7 +150,7 @@
             <strong>7</strong>
             <small>ปล้น / ประชุม / ฝึกยิง</small>
           </article>
-          <article class="metric-card" data-min-role="admin">
+          <article class="metric-card" data-min-role="secretary">
             <span class="metric-icon">!</span>
             <p>คำขอรอดำเนินการ</p>
             <strong>5</strong>
@@ -154,7 +165,7 @@
                 <p class="eyebrow">Operations</p>
                 <h3>กิจกรรมล่าสุด</h3>
               </div>
-              <button class="small-btn" type="button" data-min-role="admin">+ เพิ่มกิจกรรม</button>
+              <button class="small-btn" type="button" data-min-role="secretary">+ เพิ่มกิจกรรม</button>
             </div>
             <div class="timeline">
               <article>
@@ -221,12 +232,14 @@
           <div class="segmented" role="group" aria-label="Member filter">
             <button class="active" type="button" data-filter="all">ทั้งหมด</button>
             <button type="button" data-filter="boss">Boss</button>
+            <button type="button" data-filter="secretary">เลขา</button>
             <button type="button" data-filter="member">Member</button>
+            <button type="button" data-filter="testmember">Test</button>
           </div>
         </div>
 
         <div class="member-layout">
-          <section class="panel" data-min-role="admin">
+          <section class="panel" data-min-role="secretary">
             <div class="panel-head">
               <div>
                 <p class="eyebrow">New Member</p>
@@ -246,7 +259,9 @@
                 ยศ
                 <select>
                   <option>Boss</option>
+                  <option>เลขา</option>
                   <option>Member</option>
+                  <option>Test Member</option>
                 </select>
               </label>
               <label>
@@ -261,7 +276,7 @@
             </form>
           </section>
 
-          <section class="panel member-self" data-min-role="member" data-max-role="member">
+          <section class="panel member-self" data-min-role="testmember" data-max-role="member">
             <div class="panel-head">
               <div>
                 <p class="eyebrow">Member Workspace</p>
@@ -274,11 +289,11 @@
               <button class="small-btn" type="button">แก้โปรไฟล์ตัวเอง</button>
             </div>
             <p class="muted-copy">
-              สมาชิกทั่วไปเห็นข้อมูลทีมแบบจำกัด และแก้ได้เฉพาะข้อมูลของตัวเองเท่านั้น
+              สมาชิกและ testmember เห็นข้อมูลทีมแบบจำกัด และแก้ได้เฉพาะข้อมูลของตัวเองเท่านั้น
             </p>
           </section>
 
-          <section class="panel member-self recruit-only" data-only-role="recruit">
+          <section class="panel member-self register-only" data-only-role="register">
             <div class="panel-head">
               <div>
                 <p class="eyebrow">Waiting Approval</p>
@@ -286,7 +301,7 @@
               </div>
             </div>
             <p class="muted-copy">
-              บัญชีนี้ยังไม่เป็นสมาชิกเต็มตัว จึงเห็นได้เฉพาะสถานะสมัครและประกาศสำหรับ Recruit
+              บัญชีนี้ยังไม่เป็นสมาชิกเต็มตัว จึงเห็นได้เฉพาะสถานะสมัครและประกาศสำหรับ Register
             </p>
             <button class="primary-btn form-btn" type="button">ดูสถานะใบสมัคร</button>
           </section>
@@ -308,46 +323,180 @@
                     <th>สถานะ</th>
                     <th>แต้ม</th>
                     <th>กิจกรรมล่าสุด</th>
-                    <th data-min-role="admin">จัดการ</th>
+                    <th data-min-role="secretary">จัดการ</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr data-rank="boss">
-                    <td><span class="avatar gold">J</span> Just</td>
+                    <td><span class="member-name"><img src="assets/members/just.png" alt="" /> Just</span></td>
                     <td>Boss</td>
                     <td><span class="status open">Online</span></td>
                     <td>9,420</td>
                     <td>ประชุมแก๊ง</td>
-                    <td data-min-role="admin"><button class="row-action" type="button">แก้ไข</button></td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
                   </tr>
-                  <tr data-rank="member">
-                    <td><span class="avatar bronze">M</span> Melfury</td>
+                  <tr data-rank="secretary">
+                    <td><span class="member-name"><img src="assets/members/melfury.png" alt="" /> Melfury</span></td>
                     <td>Member</td>
                     <td><span class="status open">Online</span></td>
                     <td>4,100</td>
                     <td>Convoy</td>
-                    <td data-min-role="admin"><button class="row-action" type="button">แก้ไข</button></td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
                   </tr>
-                  <tr data-rank="member">
-                    <td><span class="avatar silver">A</span> Aheye</td>
+                  <tr data-rank="testmember">
+                    <td><span class="member-name"><img src="assets/members/aheye.png" alt="" /> Aheye</span></td>
                     <td>Member</td>
                     <td><span class="status warn">LOA</span></td>
                     <td>3,780</td>
                     <td>War Review</td>
-                    <td data-min-role="admin"><button class="row-action" type="button">แก้ไข</button></td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
                   </tr>
                   <tr data-rank="member">
                     <td><span class="avatar">N</span> Namo</td>
                     <td>Member</td>
                     <td><span class="status done">Offline</span></td>
                     <td>1,250</td>
-                    <td>Recruit Trial</td>
-                    <td data-min-role="admin"><button class="row-action" type="button">แก้ไข</button></td>
+                    <td>Test Member Trial</td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
+                  </tr>
+                  <tr data-rank="member">
+                    <td><span class="member-name"><img src="assets/members/sixseven.png" alt="" /> Sixseven</span></td>
+                    <td>เลขา</td>
+                    <td><span class="status open">Online</span></td>
+                    <td>5,900</td>
+                    <td>Review Register</td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
+                  </tr>
+                  <tr data-rank="member">
+                    <td><span class="avatar">S</span> Shion</td>
+                    <td>Test Member</td>
+                    <td><span class="status warn">ทดลองงาน</span></td>
+                    <td>680</td>
+                    <td>Interview</td>
+                    <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
                   </tr>
                 </tbody>
               </table>
             </div>
+            <div class="drive-roster">
+              <span>Sixseven</span><span>Shion</span><span>Shabu</span><span>Rava</span><span>Nongmel</span>
+              <span>Namo</span><span>Muta</span><span>Mooping</span><span>Millfei</span><span>Mhoofah</span>
+              <span>Melfury</span><span>Mei</span><span>Maysa</span><span>Maprang</span><span>Lydia</span>
+              <span>Little</span><span>Kratom</span><span>Kitkat</span><span>Just</span><span>Jisoo</span>
+              <span>Jhanjaojah</span><span>Jay</span><span>Jaoyou</span><span>Jaiko</span><span>Honye</span>
+              <span>Hiyeen</span><span>Gyo</span><span>Freya</span><span>Chujai</span><span>Carli</span>
+              <span>Bunny</span><span>Aonvon</span><span>Anna</span><span>Alin</span><span>Aheye</span>
+            </div>
           </section>
+        </div>
+      </section>
+
+      <section class="section register-section" id="register">
+        <div class="section-heading row">
+          <div>
+            <p class="eyebrow">Gang Register</p>
+            <h2>ส่งโปรไฟล์สมัครเข้าแก๊ง</h2>
+          </div>
+          <span class="badge">Discord OAuth required</span>
+        </div>
+        <div class="register-grid">
+          <form class="panel register-form">
+            <label>ชื่อในเมือง<input type="text" value="Shion" /></label>
+            <label>Discord<input type="text" value="@shion" /></label>
+            <label>เวลาที่เล่นได้<input type="text" value="20:00 - 01:00" /></label>
+            <label>ประสบการณ์ FiveM<textarea>เคยเล่นสายแก๊งและช่วยกิจกรรมทีมได้</textarea></label>
+            <label>เหตุผลที่อยากเข้า<textarea>ชอบบรรยากาศแก๊งผู้หญิงล้วนและอยากเล่นกับทีมจริงจัง</textarea></label>
+            <button class="primary-btn form-btn" type="button">ส่งใบสมัคร</button>
+          </form>
+          <div class="register-visual">
+            <img src="assets/operations-art.png" alt="Register and operations visual" />
+            <div>
+              <p class="eyebrow">Register Status</p>
+              <h3>Pending Interview</h3>
+              <p>หลังส่งใบสมัคร เลขา/Boss จะเห็นข้อมูลในหน้า Review Register เพื่ออนุมัติเป็น Test Member</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section applications" id="applications" data-min-role="secretary">
+        <div class="section-heading">
+          <p class="eyebrow">Register Review</p>
+          <h2>ข้อมูลที่ Register ส่งมา</h2>
+        </div>
+        <div class="application-grid">
+          <article class="application-card">
+            <span class="avatar">S</span>
+            <div>
+              <h3>Shion</h3>
+              <p>@shion · เล่นได้ 20:00 - 01:00 · สถานะ Pending</p>
+            </div>
+            <button class="row-action" type="button">รับเป็น Test Member</button>
+          </article>
+          <article class="application-card">
+            <span class="avatar">B</span>
+            <div>
+              <h3>Bunny</h3>
+              <p>@bunny · เคยเล่นสายซัพพอร์ต · สถานะ Interview</p>
+            </div>
+            <button class="row-action" type="button">ดูโปรไฟล์</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section leave-section" id="leave">
+        <div class="section-heading">
+          <p class="eyebrow">Attendance & Leave</p>
+          <h2>ระบบจัดการ ขาด / ลา</h2>
+        </div>
+        <div class="leave-grid">
+          <form class="panel">
+            <p class="eyebrow">LOA Request</p>
+            <h3>ส่งคำขอลา</h3>
+            <label>เหตุผล<textarea>ติดธุระส่วนตัว ขอพัก 2 วัน</textarea></label>
+            <label>ช่วงวันที่<input type="text" value="30 May - 1 Jun" /></label>
+            <button class="primary-btn form-btn" type="button">ส่งคำขอ</button>
+          </form>
+          <section class="panel panel-wide">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Absence Score</p>
+                <h3>คะแนนขาด / ลา</h3>
+              </div>
+            </div>
+            <div class="absence-list">
+              <span><b>Aheye</b><em>ลา 2 · ขาด 0 · Score 96</em></span>
+              <span><b>Namo</b><em>ลา 1 · ขาด 1 · Score 88</em></span>
+              <span><b>Shion</b><em>ลา 0 · ขาด 2 · Score 74</em></span>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="section ranking-section" id="ranking">
+        <div class="section-heading">
+          <p class="eyebrow">Top Ranking Billboard</p>
+          <h2>อันดับ 1 / 2 / 3 ประจำเดือน</h2>
+        </div>
+        <div class="podium">
+          <article class="podium-card second">
+            <img src="assets/members/sixseven.png" alt="Sixseven" />
+            <span>#2</span>
+            <h3>Sixseven</h3>
+            <p>5,900 pts</p>
+          </article>
+          <article class="podium-card first">
+            <img src="assets/members/just.png" alt="Just" />
+            <span>#1</span>
+            <h3>Just</h3>
+            <p>9,420 pts</p>
+          </article>
+          <article class="podium-card third">
+            <img src="assets/members/melfury.png" alt="Melfury" />
+            <span>#3</span>
+            <h3>Melfury</h3>
+            <p>4,100 pts</p>
+          </article>
         </div>
       </section>
 
@@ -366,13 +515,13 @@
           <article class="event-card image-card">
             <img src="assets/gang-hero.png" alt="Wongnuashuajing recruitment banner" />
             <div>
-              <span class="badge">Recruit</span>
+              <span class="badge">Register</span>
               <h3>Join The Family</h3>
               <p>พื้นที่รับสมัครสมาชิกหญิง พร้อมระบบคัดกรองและส่งแจ้งเตือน Discord</p>
             </div>
           </article>
-          <article class="event-card" data-min-role="admin">
-            <span class="badge">Admin</span>
+          <article class="event-card" data-min-role="secretary">
+            <span class="badge">Secretary</span>
             <h3>Audit & Strike</h3>
             <p>เก็บประวัติการลงโทษ คะแนนกิจกรรม และ log การแก้ไขข้อมูลสมาชิก</p>
             <div class="event-meta"><span>5 pending</span><span>2 urgent</span></div>
