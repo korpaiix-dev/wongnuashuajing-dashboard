@@ -474,29 +474,38 @@
       </section>
 
       <section class="section ranking-section" id="ranking">
-        <div class="section-heading">
-          <p class="eyebrow">Top Ranking Billboard</p>
-          <h2>อันดับ 1 / 2 / 3 ประจำเดือน</h2>
-        </div>
-        <div class="podium">
-          <article class="podium-card second">
-            <img src="assets/members/sixseven.png" alt="Sixseven" />
-            <span>#2</span>
-            <h3>Sixseven</h3>
-            <p>5,900 pts</p>
-          </article>
-          <article class="podium-card first">
-            <img src="assets/members/just.png" alt="Just" />
-            <span>#1</span>
-            <h3>Just</h3>
-            <p>9,420 pts</p>
-          </article>
-          <article class="podium-card third">
-            <img src="assets/members/melfury.png" alt="Melfury" />
-            <span>#3</span>
-            <h3>Melfury</h3>
-            <p>4,100 pts</p>
-          </article>
+        <div class="ranking-shell">
+          <div class="ranking-head">
+            <div>
+              <p class="eyebrow">Monthly Billboard</p>
+              <h2>อันดับ 1 / 2 / 3 ประจำเดือน</h2>
+            </div>
+            <input class="ranking-search" type="search" placeholder="ค้นหาชื่อ / Discord" data-ranking-search />
+          </div>
+          <div class="podium" data-podium></div>
+          <section class="ranking-table-card">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Member List</p>
+                <h3>ตาราง Ranking</h3>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="ranking-table">
+                <thead>
+                  <tr>
+                    <th>ชื่อ</th>
+                    <th>อันดับ</th>
+                    <th>สถานะ</th>
+                    <th>แต้ม</th>
+                    <th>กิจกรรมล่าสุด</th>
+                    <th data-min-role="secretary">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody data-ranking-body></tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </section>
 

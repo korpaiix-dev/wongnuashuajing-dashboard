@@ -6,9 +6,69 @@ const currentUser = document.querySelector("[data-current-user]");
 const currentRole = document.querySelector("[data-current-role]");
 const roleNote = document.querySelector("[data-role-note]");
 const accessList = document.querySelector("[data-access-list]");
+const rankingSearch = document.querySelector("[data-ranking-search]");
+const podium = document.querySelector("[data-podium]");
+const rankingBody = document.querySelector("[data-ranking-body]");
 
 let activeFilter = "all";
 let activeRole = localStorage.getItem("wng-role") || "boss";
+
+const members = [
+  {
+    name: "Just",
+    role: "Boss",
+    rankRole: "boss",
+    status: "Online",
+    points: 9420,
+    activity: "ประชุมแก๊ง",
+    image: "assets/members/just.png",
+  },
+  {
+    name: "Sixseven",
+    role: "เลขา",
+    rankRole: "secretary",
+    status: "Online",
+    points: 5900,
+    activity: "Review Register",
+    image: "assets/members/sixseven.png",
+  },
+  {
+    name: "Melfury",
+    role: "Member",
+    rankRole: "member",
+    status: "Online",
+    points: 4100,
+    activity: "Convoy",
+    image: "assets/members/melfury.png",
+  },
+  {
+    name: "Aheye",
+    role: "Member",
+    rankRole: "member",
+    status: "LOA",
+    points: 3780,
+    activity: "War Review",
+    image: "assets/members/aheye.png",
+  },
+  {
+    name: "Namo",
+    role: "Member",
+    rankRole: "member",
+    status: "Offline",
+    points: 1250,
+    activity: "Test Member Trial",
+    image: "",
+  },
+  {
+    name: "Shion",
+    role: "Test Member",
+    rankRole: "testmember",
+    status: "ทดลองงาน",
+    points: 680,
+    activity: "Interview",
+    image: "",
+  },
+];
 
 const roleLevels = {
   register: 0,
@@ -61,6 +121,76 @@ function applyMemberFilters() {
   });
 }
 
+function statusClass(status) {
+  if (status === "Online") return "open";
+  if (status === "LOA" || status === "ทดลองงาน") return "warn";
+  return "done";
+}
+
+function formatPoints(points) {
+  return points.toLocaleString("en-US");
+}
+
+function avatarMarkup(member) {
+  if (member.image) {
+    return `<span class="member-name"><img src="${member.image}" alt="" /> ${member.name}</span>`;
+  }
+
+  return `<span class="avatar">${member.name.charAt(0).toUpperCase()}</span> ${member.name}`;
+}
+
+function rankBadge(rank) {
+  if (rank <= 3) {
+    return `<span class="rank-medal rank-${rank}">${rank}</span>`;
+  }
+
+  return `<span class="rank-plain">${rank}</span>`;
+}
+
+function renderRanking() {
+  if (!podium || !rankingBody) return;
+
+  const query = (rankingSearch?.value || "").trim().toLowerCase();
+  const sortedMembers = [...members].sort((a, b) => b.points - a.points);
+  const topThree = [sortedMembers[1], sortedMembers[0], sortedMembers[2]].filter(Boolean);
+
+  podium.innerHTML = topThree
+    .map((member) => {
+      const actualRank = sortedMembers.findIndex((item) => item.name === member.name) + 1;
+      const className = actualRank === 1 ? "first" : actualRank === 2 ? "second" : "third";
+
+      return `
+        <article class="podium-card ${className}">
+          <img src="${member.image || "assets/gang-emblem.png"}" alt="${member.name}" />
+          <span class="trophy-badge">${actualRank}</span>
+          <h3>${member.name}</h3>
+          <p>${formatPoints(member.points)} pts</p>
+        </article>
+      `;
+    })
+    .join("");
+
+  rankingBody.innerHTML = sortedMembers
+    .filter((member) => {
+      const searchable = `${member.name} ${member.role} ${member.status} ${member.activity}`.toLowerCase();
+      return !query || searchable.includes(query);
+    })
+    .map((member, index) => {
+      const rank = sortedMembers.findIndex((item) => item.name === member.name) + 1;
+      return `
+        <tr>
+          <td>${avatarMarkup(member)}</td>
+          <td>${rankBadge(rank)}</td>
+          <td><span class="status ${statusClass(member.status)}">${member.status}</span></td>
+          <td>${formatPoints(member.points)}</td>
+          <td>${member.activity}</td>
+          <td data-min-role="secretary"><button class="row-action" type="button">แก้ไข</button></td>
+        </tr>
+      `;
+    })
+    .join("");
+}
+
 function isVisibleForRole(element, role) {
   const level = roleLevels[role];
   const minRole = element.dataset.minRole;
@@ -100,6 +230,7 @@ function applyRole(role) {
     .join("");
 
   applyMemberFilters();
+  renderRanking();
 }
 
 filterButtons.forEach((button) => {
@@ -112,6 +243,7 @@ filterButtons.forEach((button) => {
 });
 
 searchInput?.addEventListener("input", applyMemberFilters);
+rankingSearch?.addEventListener("input", renderRanking);
 
 roleButtons.forEach((button) => {
   button.addEventListener("click", () => {
