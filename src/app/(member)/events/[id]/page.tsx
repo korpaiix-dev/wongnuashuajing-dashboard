@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { notFound } from "next/navigation";
-import { rsvp } from "@/server-actions/events";
+import { rsvpForm } from "@/server-actions/events";
 
 export default async function EventDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -36,9 +36,10 @@ export default async function EventDetail({ params }: { params: Promise<{ id: st
         <p style={{ marginTop: 10 }}><span className="pill pill-gold">+{ev.points_reward} pts</span></p>
 
         {ev.status === "open" && session?.memberId && (
-          <form action={async (fd: FormData) => { "use server"; await rsvp(id, fd.get("r") as "yes" | "no"); }} style={{ marginTop: 16, display: "flex", gap: 10 }}>
-            <button name="r" value="yes" className={`btn ${myRsvp?.response === "yes" ? "btn-success" : ""}`}>✅ เข้าร่วม</button>
-            <button name="r" value="no" className={`btn ${myRsvp?.response === "no" ? "btn-danger" : ""}`}>❌ ไม่เข้าร่วม</button>
+          <form action={rsvpForm} style={{ marginTop: 16, display: "flex", gap: 10 }}>
+            <input type="hidden" name="event_id" value={id} />
+            <button type="submit" name="response" value="yes" className={`btn ${myRsvp?.response === "yes" ? "btn-success" : ""}`}>✅ เข้าร่วม</button>
+            <button type="submit" name="response" value="no" className={`btn ${myRsvp?.response === "no" ? "btn-danger" : ""}`}>❌ ไม่เข้าร่วม</button>
           </form>
         )}
       </div>

@@ -20,3 +20,16 @@ export async function kickMember(memberId: string) {
   await sb.from("members").update({ status: "kicked", updated_at: new Date().toISOString() }).eq("id", memberId);
   revalidatePath("/admin/members");
 }
+
+export async function updateMemberRankForm(formData: FormData) {
+  const memberId = String(formData.get("member_id") ?? "");
+  const rank = String(formData.get("rank") ?? "");
+  if (!memberId || !["member","admin","boss"].includes(rank)) return;
+  return updateMemberRank(memberId, rank as "boss"|"admin"|"member");
+}
+
+export async function kickMemberForm(formData: FormData) {
+  const memberId = String(formData.get("member_id") ?? "");
+  if (!memberId) return;
+  return kickMember(memberId);
+}

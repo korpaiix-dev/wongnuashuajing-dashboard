@@ -54,3 +54,10 @@ export async function reviewLeave(leaveId: string, approve: boolean) {
   revalidatePath("/admin");
   revalidatePath("/leave");
 }
+
+export async function reviewLeaveForm(formData: FormData) {
+  const leaveId = String(formData.get("leave_id") ?? "");
+  const verdict = String(formData.get("verdict") ?? "");
+  if (!leaveId) return;
+  return reviewLeave(leaveId, verdict === "approve");
+}

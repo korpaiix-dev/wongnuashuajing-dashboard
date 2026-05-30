@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
-import { reviewLeave } from "@/server-actions/leaves";
-import { kickMember, updateMemberRank } from "@/server-actions/members";
+import { reviewLeaveForm } from "@/server-actions/leaves";
+import { kickMemberForm, updateMemberRankForm } from "@/server-actions/members";
 import { rankLabels, type Rank } from "@/lib/types";
 
 export default async function MembersAdmin() {
@@ -39,14 +39,11 @@ export default async function MembersAdmin() {
                 </small>
                 {l.reason && <p style={{ fontSize: 13, marginTop: 6 }}>{l.reason}</p>}
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <form action={async () => { "use server"; await reviewLeave(l.id, true); }}>
-                  <button className="btn btn-success btn-sm">✓ อนุมัติ</button>
-                </form>
-                <form action={async () => { "use server"; await reviewLeave(l.id, false); }}>
-                  <button className="btn btn-danger btn-sm">✕ ไม่ผ่าน</button>
-                </form>
-              </div>
+              <form action={reviewLeaveForm} style={{ display: "flex", gap: 8 }}>
+                <input type="hidden" name="leave_id" value={l.id} />
+                <button type="submit" name="verdict" value="approve" className="btn btn-success btn-sm">✓ อนุมัติ</button>
+                <button type="submit" name="verdict" value="reject" className="btn btn-danger btn-sm">✕ ไม่ผ่าน</button>
+              </form>
             </div>
           ))}
         </div>
@@ -72,18 +69,20 @@ export default async function MembersAdmin() {
                   <td><span className={`pill pill-${m.status === "active" ? "success" : m.status === "loa" ? "warn" : "danger"}`}>{m.status}</span></td>
                   <td>
                     {canChangeRank && m.status === "active" && (
-                      <form action={async (fd: FormData) => { "use server"; await updateMemberRank(m.id, fd.get("rank") as Rank); }} style={{ display: "inline-flex", gap: 6 }}>
+                      <form action={updateMemberRankForm} style={{ display: "inline-flex", gap: 6, marginRight: 6 }}>
+                        <input type="hidden" name="member_id" value={m.id} />
                         <select name="rank" defaultValue={m.rank} style={{ width: 100 }}>
                           <option value="member">Member</option>
                           <option value="admin">Admin</option>
                           <option value="boss">Boss</option>
                         </select>
-                        <button className="btn btn-sm">บันทึก</button>
+                        <button type="submit" className="btn btn-sm">บันทึก</button>
                       </form>
                     )}
                     {canChangeRank && m.status !== "kicked" && (
-                      <form action={async () => { "use server"; await kickMember(m.id); }} style={{ display: "inline-block", marginLeft: 6 }}>
-                        <button className="btn btn-sm btn-danger">ปลด</button>
+                      <form action={kickMemberForm} style={{ display: "inline-block" }}>
+                        <input type="hidden" name="member_id" value={m.id} />
+                        <button type="submit" className="btn btn-sm btn-danger">ปลด</button>
                       </form>
                     )}
                   </td>

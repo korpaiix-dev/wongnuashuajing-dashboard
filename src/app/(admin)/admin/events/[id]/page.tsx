@@ -1,5 +1,5 @@
 import { adminClient } from "@/lib/supabase";
-import { submitEventResult } from "@/server-actions/events";
+import { submitEventResultForm } from "@/server-actions/events";
 import { notFound } from "next/navigation";
 
 export default async function AdminEventResult({ params }: { params: Promise<{ id: string }> }) {
@@ -26,7 +26,8 @@ export default async function AdminEventResult({ params }: { params: Promise<{ i
         <p className="muted">{new Date(ev.when_at).toLocaleString("th-TH")}</p>
       </div>
 
-      <form action={async (fd: FormData) => { "use server"; await submitEventResult(id, fd); }} className="card form" style={{ padding: 24 }}>
+      <form action={submitEventResultForm} className="card form" style={{ padding: 24 }}>
+        <input type="hidden" name="event_id" value={id} />
         <h2>กรอกผล</h2>
         <div className="grid grid-3">
           <div className="form-row">
@@ -55,7 +56,7 @@ export default async function AdminEventResult({ params }: { params: Promise<{ i
           </select>
         </div>
         <div className="form-row">
-          <label>สมาชิกที่มาจริง (tick) — default คือคนกด "เข้าร่วม"</label>
+          <label>สมาชิกที่มาจริง (tick) — default คือคนกด &quot;เข้าร่วม&quot;</label>
           <div className="grid grid-3" style={{ marginTop: 6, padding: 12, background: "#080808", borderRadius: 8 }}>
             {(allMembers ?? []).map((m) => (
               <label key={m.id} className="flex" style={{ fontSize: 13 }}>
@@ -69,7 +70,7 @@ export default async function AdminEventResult({ params }: { params: Promise<{ i
           <label>หมายเหตุ</label>
           <textarea name="notes" rows={2} defaultValue={result?.notes ?? ""} />
         </div>
-        <button className="btn btn-primary btn-block">บันทึกผล + ให้คะแนน</button>
+        <button type="submit" className="btn btn-primary btn-block">บันทึกผล + ให้คะแนน</button>
       </form>
     </div>
   );

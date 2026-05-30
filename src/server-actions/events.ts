@@ -147,3 +147,17 @@ export async function submitEventResult(eventId: string, formData: FormData) {
   revalidatePath(`/events/${eventId}`);
   revalidatePath("/admin");
 }
+
+// Form wrappers (called directly from <form action={...}> with hidden inputs)
+export async function rsvpForm(formData: FormData) {
+  const eventId = String(formData.get("event_id") ?? "");
+  const response = String(formData.get("response") ?? "");
+  if (!eventId || (response !== "yes" && response !== "no")) return;
+  return rsvp(eventId, response as "yes" | "no");
+}
+
+export async function submitEventResultForm(formData: FormData) {
+  const eventId = String(formData.get("event_id") ?? "");
+  if (!eventId) return;
+  return submitEventResult(eventId, formData);
+}
