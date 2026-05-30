@@ -158,3 +158,17 @@ small { color: var(--muted); font-size: 12px; }
 .success { color: var(--success); }
 .danger { color: var(--danger); }
 .warn { color: var(--warn); }
+
+/* focus-visible — gold ring matching theme */
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: none;
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+}
+.event-clickable { cursor: pointer; transition: background 0.15s, border-color 0.15s; }
+.event-clickable:hover { background: rgba(212, 175, 55, 0.05); border-color: var(--line-2); }

@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import Avatar from "@/components/Avatar";
 import { reviewApplication } from "@/server-actions/applications";
 
 export default async function ApplicantsAdmin() {
@@ -24,11 +25,7 @@ export default async function ApplicantsAdmin() {
             return (
               <div key={a.id} className="card" style={{ padding: 20 }}>
                 <div className="flex" style={{ marginBottom: 12 }}>
-                  {p?.avatar_url ? (
-                    <img src={p.avatar_url} alt="" className="avatar avatar-lg" />
-                  ) : (
-                    <div className="avatar avatar-lg">{a.display_name.charAt(0).toUpperCase()}</div>
-                  )}
+                  <Avatar src={p?.avatar_url} name={a.display_name} size="lg" />
                   <div style={{ flex: 1 }}>
                     <strong style={{ fontSize: 16 }}>{a.display_name}</strong>
                     <div><small className="muted">@{p?.discord_username ?? "—"} · เล่นได้ {a.available_time || "—"}</small></div>

@@ -1,8 +1,10 @@
 import { auth } from "@/lib/auth";
+import Avatar from "@/components/Avatar";
 import { adminClient } from "@/lib/supabase";
 import { reviewLeaveForm } from "@/server-actions/leaves";
 import { kickMemberForm, updateMemberRankForm } from "@/server-actions/members";
 import { rankLabels, type Rank } from "@/lib/types";
+import ConfirmSubmit from "@/components/ConfirmSubmit";
 
 export default async function MembersAdmin() {
   const session = await auth();
@@ -14,7 +16,7 @@ export default async function MembersAdmin() {
     .order("name");
   const { data: pendingLeaves } = await sb
     .from("leaves")
-    .select("id, type, start_date, end_date, reason, status, created_at, members(id, name)")
+    .select("id, type, start_date, end_date, reason, status, created_at, members!leaves_member_id_fkey(id, name)")
     .eq("status", "pending")
     .order("created_at", { ascending: false });
 
@@ -60,7 +62,7 @@ export default async function MembersAdmin() {
                 <tr key={m.id}>
                   <td>
                     <span className="name-cell">
-                      {p?.avatar_url ? <img src={p.avatar_url} alt="" className="avatar avatar-sm" /> : <div className="avatar avatar-sm">{m.name.charAt(0).toUpperCase()}</div>}
+                      <Avatar src={p?.avatar_url} name={m.name} size="sm" />
                       <span>{m.name}</span>
                     </span>
                   </td>
@@ -82,7 +84,7 @@ export default async function MembersAdmin() {
                     {canChangeRank && m.status !== "kicked" && (
                       <form action={kickMemberForm} style={{ display: "inline-block" }}>
                         <input type="hidden" name="member_id" value={m.id} />
-                        <button type="submit" className="btn btn-sm btn-danger">ปลด</button>
+                        <ConfirmSubmit message="ปลดสมาชิกคนนี้ออกจากแก๊ง?" className="btn btn-sm btn-danger">ปลด</ConfirmSubmit>
                       </form>
                     )}
                   </td>

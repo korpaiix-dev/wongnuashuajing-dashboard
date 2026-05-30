@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import Avatar from "@/components/Avatar";
 import { rankLabels, type Rank } from "@/lib/types";
 import Link from "next/link";
 
@@ -36,11 +37,9 @@ export default async function Roster() {
             <div className="grid grid-4">
               {grouped[rank].map((m) => (
                 <Link key={m.id} href={`/roster/${m.id}`} className="card" style={{ textAlign: "center" }}>
-                  {m.profiles?.avatar_url ? (
-                    <img src={m.profiles.avatar_url} alt="" className="avatar avatar-lg" style={{ margin: "0 auto 10px" }} />
-                  ) : (
-                    <div className="avatar avatar-lg" style={{ margin: "0 auto 10px" }}>{m.name.charAt(0).toUpperCase()}</div>
-                  )}
+                  <div style={{ margin: "0 auto 10px", display: "inline-block" }}>
+                    <Avatar src={m.profiles?.avatar_url} name={m.name} size="lg" />
+                  </div>
                   <strong>{m.name}</strong>
                   <div style={{ marginTop: 6 }}>
                     <span className={`pill pill-${rank === "boss" ? "gold" : rank === "admin" ? "warn" : ""}`}>{rankLabels[rank]}</span>

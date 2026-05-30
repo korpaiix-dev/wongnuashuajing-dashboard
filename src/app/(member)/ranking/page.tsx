@@ -1,4 +1,5 @@
 import { adminClient } from "@/lib/supabase";
+import Avatar from "@/components/Avatar";
 import { rankLabels, type Rank } from "@/lib/types";
 import Link from "next/link";
 
@@ -30,7 +31,7 @@ export default async function Ranking() {
             return (
               <div key={m.member_id} className={`podium-card ${cls}`}>
                 <div className="podium-rank">#{realRank}</div>
-                {m.avatar_url ? <img src={m.avatar_url} alt="" className="avatar avatar-lg" style={{ margin: "0 auto 10px" }} /> : <div className="avatar avatar-lg" style={{ margin: "0 auto 10px" }}>{m.name.charAt(0).toUpperCase()}</div>}
+                <div style={{ margin: "0 auto 10px", display: "inline-block" }}><Avatar src={m.avatar_url} name={m.name} size="lg" /></div>
                 <h3>{m.name}</h3>
                 <p className="gold" style={{ fontSize: 22, fontWeight: 700, marginTop: 6 }}>{m.points_month} pts</p>
               </div>
@@ -51,7 +52,7 @@ export default async function Ranking() {
                   <td><strong className={i < 3 ? "gold" : ""}>#{i + 1}</strong></td>
                   <td>
                     <Link href={`/roster/${r.member_id}`} className="name-cell">
-                      {r.avatar_url ? <img src={r.avatar_url} alt="" className="avatar avatar-sm" /> : <div className="avatar avatar-sm">{r.name.charAt(0).toUpperCase()}</div>}
+                      <Avatar src={r.avatar_url} name={r.name} size="sm" />
                       <span>{r.name}</span>
                     </Link>
                   </td>

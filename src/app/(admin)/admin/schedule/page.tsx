@@ -1,6 +1,7 @@
 import { adminClient } from "@/lib/supabase";
 import { createTemplate, toggleTemplate, deleteTemplate } from "@/server-actions/templates";
 import { eventLabels, type EventType } from "@/lib/types";
+import ConfirmSubmit from "@/components/ConfirmSubmit";
 
 const DOW_LABEL = ["อา","จ","อ","พ","พฤ","ศ","ส"];
 
@@ -35,7 +36,7 @@ export default async function SchedulePage() {
           </div>
           <div className="form-row">
             <label>เวลาในวัน (คั่นด้วย , หรือเว้นวรรค — 24h)</label>
-            <input name="times" required placeholder="14:00, 18:00, 22:00" />
+            <input name="times" required pattern="^([01]?\\d|2[0-3]):[0-5]\\d(\\s*,\\s*([01]?\\d|2[0-3]):[0-5]\\d)*$" placeholder="14:00, 18:00, 22:00" title="ใส่เวลาในรูปแบบ HH:MM คั่นด้วย comma เช่น 14:00, 18:00, 22:00" />
           </div>
           <div className="form-row">
             <label>วันที่ใช้</label>
@@ -97,7 +98,7 @@ export default async function SchedulePage() {
                   </form>
                   <form action={deleteTemplate}>
                     <input type="hidden" name="template_id" value={t.id} />
-                    <button type="submit" className="btn btn-sm btn-danger">ลบ</button>
+                    <ConfirmSubmit message="ลบเทมเพลตนี้ทั้งหมด? (ไม่กระทบ event ที่สร้างไปแล้ว)" className="btn btn-sm btn-danger">ลบ</ConfirmSubmit>
                   </form>
                 </div>
               </div>

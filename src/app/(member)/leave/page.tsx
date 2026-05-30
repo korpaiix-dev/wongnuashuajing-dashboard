@@ -44,7 +44,7 @@ export default async function LeavePage() {
             </div>
             <div className="form-row">
               <label>เหตุผล</label>
-              <textarea name="reason" rows={3} placeholder="เหตุผลสั้นๆ" />
+              <textarea name="reason" rows={3} required minLength={5} placeholder="เหตุผลสั้นๆ (อย่างน้อย 5 ตัวอักษร)" />
             </div>
             <button className="btn btn-primary btn-block">ส่งคำขอ</button>
           </form>
@@ -57,7 +57,7 @@ export default async function LeavePage() {
               <div key={l.id} className="card card-tight spread">
                 <div>
                   <strong>{l.type === "loa" ? "ลา" : "ขาด"}</strong> <small className="muted">{l.start_date}{l.end_date && l.end_date !== l.start_date ? ` → ${l.end_date}` : ""}</small>
-                  {l.reason && <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4 }}>{l.reason}</p>}
+                  {l.reason && <p style={{ fontSize: 12, color: "var(--muted)", marginTop: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{l.reason}</p>}
                 </div>
                 <span className={`pill pill-${l.status === "approved" ? "success" : l.status === "rejected" ? "danger" : "warn"}`}>
                   {l.status === "pending" ? "รออนุมัติ" : l.status === "approved" ? "ผ่าน" : "ไม่ผ่าน"}

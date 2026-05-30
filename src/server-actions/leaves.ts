@@ -12,6 +12,7 @@ export async function submitLeave(formData: FormData) {
   const start_date = String(formData.get("start_date") ?? "");
   const end_date = String(formData.get("end_date") ?? start_date);
   if (!start_date) return;
+  if (reason.length < 5) return;  // server-side: reason required
 
   const sb = adminClient();
   await sb.from("leaves").insert({

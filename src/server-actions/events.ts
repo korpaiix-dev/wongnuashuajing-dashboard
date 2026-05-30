@@ -2,6 +2,7 @@
 import { auth } from "@/lib/auth";
 import { adminClient } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { SCORE_RULES, type EventType } from "@/lib/types";
 
 const TYPE_DEFAULT_POINTS: Record<EventType, number> = {
@@ -43,6 +44,7 @@ export async function createEvent(formData: FormData) {
   }
   revalidatePath("/events");
   revalidatePath("/admin");
+  if (ev) redirect(`/admin/events/${ev.id}`);
 }
 
 export async function rsvp(eventId: string, response: "yes" | "no") {
