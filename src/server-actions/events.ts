@@ -18,7 +18,13 @@ export async function createEvent(formData: FormData) {
 
   const type = String(formData.get("type") ?? "story") as EventType;
   const title = String(formData.get("title") ?? "").trim().slice(0, 100);
-  const when_at = String(formData.get("when_at") ?? "");
+  let when_at_raw = String(formData.get("when_at") ?? "");
+  // BE → CE fallback (browser locale บางตัวส่งปี พ.ศ. มาในช่อง datetime-local)
+  const yearMatch = when_at_raw.match(/^(\d{4})/);
+  if (yearMatch && Number(yearMatch[1]) > 2400) {
+    when_at_raw = String(Number(yearMatch[1]) - 543) + when_at_raw.slice(4);
+  }
+  const when_at = when_at_raw;
   const location = String(formData.get("location") ?? "").trim().slice(0, 200) || null;
   const enemy_gang = String(formData.get("enemy_gang") ?? "").trim().slice(0, 80) || null;
   const notes = String(formData.get("notes") ?? "").trim().slice(0, 500) || null;
