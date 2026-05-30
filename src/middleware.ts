@@ -1,10 +1,35 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
 export default auth((req) => {
-  // Public for now — flip to enforce auth when ready:
-  // if (!req.auth) return Response.redirect(new URL("/api/auth/signin", req.url));
+  const url = req.nextUrl;
+  const path = url.pathname;
+  const persona = req.auth?.persona ?? "guest";
+
+  // Public paths
+  if (path === "/" || path.startsWith("/api") || path.startsWith("/_next") || path.startsWith("/assets")) {
+    return NextResponse.next();
+  }
+
+  // Not signed in → bounce to "/"
+  if (!req.auth) {
+    return NextResponse.redirect(new URL("/", url));
+  }
+
+  // Applicant: only allowed on /apply
+  if (persona === "applicant") {
+    if (!path.startsWith("/apply")) return NextResponse.redirect(new URL("/apply", url));
+    return NextResponse.next();
+  }
+
+  // Member: cannot enter /admin
+  if (persona === "member" && path.startsWith("/admin")) {
+    return NextResponse.redirect(new URL("/dashboard", url));
+  }
+
+  return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|assets|favicon.ico).*)"],
+  matcher: ["/((?!_next/static|_next/image|assets|favicon.ico).*)"],
 };

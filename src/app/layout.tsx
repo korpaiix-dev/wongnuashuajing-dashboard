@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Wongnuashuajing Gang Dashboard",
-  description: "Women Gang OS — ระบบจัดการสมาชิก กิจกรรม ขาด/ลา และคลังสำหรับแก๊ง FiveM",
+  title: "Wongnuashuajing — Gang OS",
+  description: "ระบบจัดการสมาชิก กิจกรรม และคะแนนสำหรับแก๊ง Wongnuashuajing",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
